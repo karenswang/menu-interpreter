@@ -1,0 +1,3 @@
+openai
+# lambda giving errors on pydantic v2
+pydantic==1.*
