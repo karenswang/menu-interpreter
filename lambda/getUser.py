@@ -6,7 +6,7 @@ table = dynamodb.Table('user')
 
 def lambda_handler(event, context):
     print(event)
-    username = event['queryStringParameters']['username']
+    username = event['pathParameters']['username']
     
     # Check if user is logged in
     response = table.get_item(Key={'username': username})

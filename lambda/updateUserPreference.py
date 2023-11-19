@@ -7,7 +7,7 @@ table = dynamodb.Table('user')
 
 def lambda_handler(event, context):
     body = json.loads(event['body'])
-    username = event['queryStringParameters']['username'] 
+    username = event['pathParameters']['username'] 
     new_preferences = json.dumps(body)
     
     # Check if user is logged in

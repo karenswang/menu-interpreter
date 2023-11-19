@@ -10,6 +10,7 @@ import json
 import base64
 import logging
 import boto3
+import uuid
 
 from botocore.exceptions import ClientError
 
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 # Get the boto3 client.
 textract_client = boto3.client('textract')
-# dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb')
 
 def lambda_handler(event, context):
     """
@@ -28,7 +29,6 @@ def lambda_handler(event, context):
     return: The list of Block objects recognized in the document
     passed in the event object.
     """
-    print(event)
 
     try:
 
@@ -40,6 +40,7 @@ def lambda_handler(event, context):
         #     image = {'Bytes': img_b64decoded}
         #     print("using image")
 
+        print(event)
 
         # elif 's3' in event:
         bucket = event['Records'][0]['s3']['bucket']['name']
@@ -48,7 +49,6 @@ def lambda_handler(event, context):
                     {'Bucket':  bucket,
                      'Name': object_key}
                     }
-        print("using s3")
                      
             # # Get bucket name and object key from the S3 event
             # bucket = event['Records'][0]['s3']['bucket']['name']
@@ -71,11 +71,9 @@ def lambda_handler(event, context):
 
         # Get the Blocks
         blocks = response['Blocks']
-
-        lambda_response = {
-            "statusCode": 200,
-            "body": json.dumps(blocks)
-        }
+        
+        extracted_text = extract_text_from_textract_response(response)
+        print(extracted_text)
 
     except ClientError as err:
         error_message = "Couldn't analyze image. " + \
@@ -102,8 +100,20 @@ def lambda_handler(event, context):
         logger.error("Error function %s: %s",
             context.invoked_function_arn, format(val_error))
 
-    extracted_text = extract_text_from_textract_response(response)
-    print(extracted_text)
+    # Extract restaurant name from the file name (assuming file name is the restaurant name)
+    restaurant_name = object_key
+    menu_id = save_to_dynamodb('menu-items', restaurant_name, extracted_text)
+
+    lambda_response = {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": json.dumps({
+            "menu_id": menu_id 
+        })
+    }
+    
     return lambda_response
 
 
@@ -118,6 +128,22 @@ def extract_text_from_textract_response(response):
             if block['BlockType'] == 'LINE':
                 # Append the detected text to the extracted_text string
                 if 'Text' in block:
-                    extracted_text += block['Text'] + '\n'  # Adding a newline character for each line
+                    extracted_text += block['Text'] + ', '  # Adding a comma for each line
 
     return extracted_text
+    
+    
+def save_to_dynamodb(table_name, restaurant_name, extracted_text):
+    table = dynamodb.Table(table_name)
+    # menu_id = str(uuid.uuid4())
+    try:
+        table.put_item(Item={
+            # 'menu_id': menu_id, 
+            'menu_id': restaurant_name, # using user-defined restaurant name for now
+            'restaurant_name': restaurant_name,
+            'menu_text': extracted_text
+        })
+        logger.info(f"Data saved for restaurant: {restaurant_name}")
+    except ClientError as e:
+        logger.error("Error saving to DynamoDB: %s", e)
+    return menu_id

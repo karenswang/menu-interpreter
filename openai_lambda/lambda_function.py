@@ -8,7 +8,7 @@ def lambda_handler(event, context):
     user_table = dynamodb.Table('user')
     menu_table = dynamodb.Table('menu-items')
     
-    openai.api_key = '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'
+    openai.api_key = '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'
     client = OpenAI(
         api_key=openai.api_key,
         )
