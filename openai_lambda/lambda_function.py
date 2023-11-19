@@ -2,13 +2,15 @@ import json
 import boto3
 import openai
 from openai import OpenAI
+import os
 
 def lambda_handler(event, context):
     dynamodb = boto3.resource('dynamodb')
     user_table = dynamodb.Table('user')
     menu_table = dynamodb.Table('menu-items')
     
-    openai.api_key = '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'
+    openai.api_key = os.environ['OPENAI_API_KEY']
+    
     client = OpenAI(
         api_key=openai.api_key,
         )
