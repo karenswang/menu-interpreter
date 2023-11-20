@@ -11,6 +11,7 @@ import base64
 import logging
 import boto3
 import uuid
+import base64
 
 from botocore.exceptions import ClientError
 
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 # Get the boto3 client.
 textract_client = boto3.client('textract')
 dynamodb = boto3.resource('dynamodb')
+
 
 def lambda_handler(event, context):
     """
@@ -49,7 +51,7 @@ def lambda_handler(event, context):
                     {'Bucket':  bucket,
                      'Name': object_key}
                     }
-                     
+
             # # Get bucket name and object key from the S3 event
             # bucket = event['Records'][0]['s3']['bucket']['name']
             # object_key = event['Records'][0]['s3']['object']['key']
@@ -102,16 +104,15 @@ def lambda_handler(event, context):
 
     # Extract restaurant name from the file name (assuming file name is the restaurant name)
     restaurant_name = object_key
-    menu_id = save_to_dynamodb('menu-items', restaurant_name, extracted_text)
+    save_to_dynamodb('menu-items', restaurant_name, extracted_text)
 
     lambda_response = {
         "statusCode": 200,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*'
         },
-        "body": json.dumps({
-            "menu_id": menu_id 
-        })
+        "body": json.dumps('File successfully uploaded for analysis.')
     }
     
     return lambda_response
@@ -146,4 +147,3 @@ def save_to_dynamodb(table_name, restaurant_name, extracted_text):
         logger.info(f"Data saved for restaurant: {restaurant_name}")
     except ClientError as e:
         logger.error("Error saving to DynamoDB: %s", e)
-    return menu_id

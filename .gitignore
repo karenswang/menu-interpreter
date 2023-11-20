@@ -1,3 +1,6 @@
 .env
 */package
 .DS_Store
+yelp.py
+convert_json.py
+.zip

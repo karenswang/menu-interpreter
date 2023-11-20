@@ -1,0 +1,130 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-icon span {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.upload-container {
+    text-align: center;
+}
+
+.upload-area {
+    border: 2px dashed #000;
+    border-radius: 10px;
+    padding: 50px;
+    margin-bottom: 20px;
+    width: 300px; /* You can adjust the size as needed */
+    height: 200px; /* You can adjust the size as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-area p {
+    text-align: center;
+    color: #888;
+    margin: 0;
+}
+
+#upload-btn {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#upload-btn:hover {
+    background-color: #555;
+}
+
+
+/* form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input[type="text"], form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #d32323;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+form button:hover {
+    background-color: #b91d1d;
+} */
+
+
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+    color: white;
+}
+
+.success {
+    background-color: #4CAF50; /* Green */
+}
+
+.error {
+    background-color: #f44336; /* Red */
+}
+
+/* Styles for form elements */
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
