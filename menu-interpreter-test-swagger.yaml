@@ -1,14 +1,14 @@
 ---
 swagger: "2.0"
 info:
-  version: "2023-11-19T05:05:29Z"
+  version: "2023-11-20T05:11:44Z"
   title: "menu-interpreter"
 host: "r6n9qvzplb.execute-api.us-east-1.amazonaws.com"
 basePath: "/test"
 schemes:
 - "https"
 paths:
-  /menu/{menu_id}/analysis:
+  /analyze-menu/{menu_id}:
     post:
       produces:
       - "application/json"
@@ -22,6 +22,31 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "menu_id"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
   /preference/{username}:
     get:
       produces:
@@ -36,6 +61,9 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
     put:
       produces:
       - "application/json"
@@ -49,6 +77,31 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
   /upload/{objectKey}:
     put:
       produces:
@@ -62,7 +115,10 @@ paths:
         "200":
           description: "200 response"
           schema:
-            $ref: "#/definitions/Empty"
+            $ref: "#/definitions/Menu"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
     options:
       consumes:
       - "application/json"
@@ -102,6 +158,32 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "User"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
   /user/login:
     post:
       consumes:
@@ -119,6 +201,26 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
 definitions:
   Empty:
     type: "object"
@@ -131,4 +233,11 @@ definitions:
       username:
         type: "string"
       password:
+        type: "string"
+  Menu:
+    type: "object"
+    required:
+    - "menu_id"
+    properties:
+      menu_id:
         type: "string"
