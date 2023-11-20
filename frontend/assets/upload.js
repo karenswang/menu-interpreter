@@ -49,17 +49,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 // displayMessage('File uploaded successfully', true);
                 displayMessage('Analysis initiated. Give me a second to read the menu and your profile...', true);
 
-                return callAnalyzeMenuEndpoint(restaurantName, apigClient);
-            })
-            .then(response => {
-                console.log('Menu analysis initiated:', response);
-                displayMessage(response.data, true);
-            })
-            .catch(error => {
-                console.error('Error uploading file:', error);
-                displayMessage(error.data || 'An error occured', false);
-            });
-    });
+            // Wait for a delay before calling analyzeMenuEndpoint
+            setTimeout(() => {
+                callAnalyzeMenuEndpoint(restaurantName, apigClient)
+                    .then(response => {
+                        console.log('Menu analysis initiated:', response);
+                        displayMessage(response.data, true);
+                    })
+                    .catch(error => {
+                        console.error('Error during menu analysis:', error);
+                        displayMessage('Error during menu analysis.', false);
+                    });
+            }, 3000); // Delay of 5000 milliseconds (5 seconds)
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+            displayMessage('An error occurred during file upload.', false);
+        });
+});
 });
 
 function readImage(file) {
