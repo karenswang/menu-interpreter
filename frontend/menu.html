@@ -8,14 +8,14 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="menu-icon">
+        <div class="menu-icon" id="menuIcon">
             <span>☰</span>
         </div>
-        <div class="navbar-buttons">
-            <button class="nav-button">Home</button>
-            <button class="nav-button">Search Menu</button>
-            <button class="nav-button">Scan Menu</button>
-            <button class="nav-button">My Profile</button>
+        <div class="navbar-buttons" id="navbarButtons">
+            <button class="nav-button" onclick="redirectToMenu()">Home</button>
+            <button class="nav-button" onclick="redirectToMenuSearch()">Search for menus by restaurant</button>
+            <button class="nav-button" onclick="redirectToScanMenu()">Scan a menu</button>
+            <button class="nav-button" onclick="redirectToMyProfile()">My profile</button>
         </div>
     </nav>
     <header class="header">
@@ -50,5 +50,6 @@
     <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
     <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
     <script type="text/javascript" src="apigClient.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
