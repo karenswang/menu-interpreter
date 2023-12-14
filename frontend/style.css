@@ -7,6 +7,27 @@ body, html {
 .navbar {
     background-color: #333;
     overflow: hidden;
+    
+    /*display: flex;*/
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh; /* Set the height to fill the entire viewport */
+    width: 50px;
+}
+
+.navbar-buttons {
+    display: none;
+    flex-direction: column;
+}
+
+.nav-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
 }
 
 .menu-icon span {
@@ -18,11 +39,21 @@ body, html {
     cursor: pointer;
 }
 
+/* Adjust styles for vertical navbar */
+.menu-icon {
+    /*float: left; Float the icon to the left */
+    order: 1;
+    margin-bottom: auto;
+}
+
 .header {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 200px;
+
+    margin-left: 50px;
+
     background-color: #f5f5f5;
 }
 
@@ -39,6 +70,9 @@ body, html {
     display: flex;
     justify-content: space-around;
     align-items: center;
+
+    margin-left: 50px;
+
 }
 
 .image-container {
