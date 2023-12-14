@@ -26,7 +26,8 @@
             </div>
             <!-- <button type="submit">Submit</button> -->
             <div class="button-group">
-                <button id="signUp" type="button">Sign Up</button>
+                <!--<button id="signUp" type="button">Sign Up</button>-->
+                <button id="signUp" type="button" onclick="redirectToSignup()">Sign Up</button>
                 <button id="login" type="button">Login</button>
             </div>
             <div id="message"></div>
@@ -43,6 +44,11 @@
     <script type="text/javascript" src="./apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
     <script type="text/javascript" src="./apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
     <script type="text/javascript" src="./apiGateway-js-sdk/apigClient.js"></script>
+    <script>
+        function redirectToSignup() {
+            window.location.href = 'signup.html';
+        }
+    </script>
     <script src="./assets/login.js"></script>
 </body>
 </html>
