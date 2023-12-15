@@ -10,12 +10,53 @@ body, html {
     justify-content: center;
 }
 
-.menu-icon span {
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+    
+    /*display: flex;*/
     position: absolute;
-    top: 20px;
-    left: 20px;
+    left: 0;
+    top: 0;
+    height: 100vh; /* Set the height to fill the entire viewport */
+    width: 50px;
+
+    transition: width 0.3s;
+}
+
+.navbar.active {
+    width: 200px; /* Adjust the expanded width as needed */
+}
+
+.navbar-buttons {
+    display: none;
+    flex-direction: column;
+}
+
+.nav-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+
+.menu-icon span {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
     font-size: 1.5em;
     cursor: pointer;
+}
+
+/* Adjust styles for vertical navbar */
+.menu-icon {
+    /*float: left; Float the icon to the left */
+    order: 1;
+    margin-bottom: auto;
 }
 
 .upload-container {

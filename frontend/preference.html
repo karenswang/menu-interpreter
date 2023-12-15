@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="preference.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="menu-icon" id="menuIcon">
+            <span>☰</span>
+        </div>
+        <div class="navbar-buttons" id="navbarButtons">
+            <button class="nav-button" onclick="redirectToMenu()">Home</button>
+            <button class="nav-button" onclick="redirectToMenuSearch()">Search for menus by restaurant</button>
+            <button class="nav-button" onclick="redirectToScanMenu()">Scan a menu</button>
+            <button class="nav-button" onclick="redirectToMyProfile()">My profile</button>
+        </div>
+    </nav>
     <div class="container">
         <h2>Please check your health conditions, as well as the items that you cannot eat, are allergy to, or want to avoid in general:</h2>
         <form class="restrictions-form" id="preferenceForm">
@@ -62,5 +73,6 @@
     <script type="text/javascript" src="./apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
     <script type="text/javascript" src="./apiGateway-js-sdk/apigClient.js"></script>
     <script type="text/javascript" src="./assets/preference.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
