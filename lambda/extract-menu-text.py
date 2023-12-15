@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Get the boto3 client.
 textract_client = boto3.client('textract')
 dynamodb = boto3.resource('dynamodb')
-
+s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     """
@@ -47,8 +47,11 @@ def lambda_handler(event, context):
         # elif 's3' in event:
         bucket = event['Records'][0]['s3']['bucket']['name']
         object_key = event['Records'][0]['s3']['object']['key']
+        
         metadata = s3.head_object(Bucket=bucket, Key=object_key)
+        print("metadata: ", metadata)
         username = metadata.get('Metadata', {}).get('username', '')
+        print("username: ", username)
         image = {'S3Object':
                     {'Bucket':  bucket,
                      'Name': object_key}
@@ -77,7 +80,7 @@ def lambda_handler(event, context):
         blocks = response['Blocks']
         
         extracted_text = extract_text_from_textract_response(response)
-        print(extracted_text)
+        print("extracted text:", extracted_text)
 
     except ClientError as err:
         error_message = "Couldn't analyze image. " + \
