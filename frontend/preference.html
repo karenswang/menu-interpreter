@@ -19,45 +19,45 @@
         </div>
     </nav>
     <div class="container">
-        <h2>Please check your health conditions, as well as the items that you cannot eat, are allergy to, or want to avoid in general:</h2>
+        <div class="user-info">
+            <img src="user_icon.jpg" alt="User Icon" class="user-icon">
+            <div class="user-details">
+                <p><strong>Username:</strong> Actual Username</p>
+                <p><strong>Email:</strong> actualuser@email.com</p>
+            </div>
+        </div>
+        
+        <h2>Please check your health conditions, as well as the items that you cannot eat, are allergic to, or want to avoid in general:</h2>
         <form class="restrictions-form" id="preferenceForm">
-            <div class="column">
-                <label><input type="checkbox" checked> Chili</label>
-                <label><input type="checkbox" checked> Nut</label>
-                <label><input type="checkbox"> Shellfish</label>
-                <label><input type="checkbox"> Dairy</label>
-                <label><input type="checkbox"> Egg</label>
-                <label><input type="checkbox"> Soy</label>
-                <label><input type="checkbox" checked> Gout (Avoid High Uric Acid Foods)</label>
-                <label><input type="checkbox" checked> Seafood</label>
-                <label><input type="checkbox"> Organs (liver, kidney, etc.)</label>
-                <label><input type="checkbox" checked> Red meat</label>
-                <label><input type="checkbox" checked> Alcohol</label>
-                <label><input type="checkbox" checked> Ice cream</label>
+            <div class="row">
+                <div class="column">
+                    <label><input type="checkbox" checked> Chili</label>
+                    <label><input type="checkbox" checked> Nut</label>
+                    <label><input type="checkbox"> Shellfish</label>
+                    <label><input type="checkbox"> Dairy</label>
+                </div>
+                <div class="column">
+                    <label><input type="checkbox"> Egg</label>
+                    <label><input type="checkbox"> Soy</label>
+                    <label><input type="checkbox" checked> Gout (Avoid High Uric Acid Foods)</label>
+                    <label><input type="checkbox" checked> Seafood</label>
+                </div>
             </div>
-            <div class="column">
-                <label><input type="checkbox" checked> Lactose Intolerance</label>
-                <label><input type="checkbox" checked> Meat (i.e. you are vegetarain)</label>
-                <label><input type="checkbox"> Kosher-only</label>
-                <label><input type="checkbox"> Bananas</label>
-                <label><input type="checkbox"> Kiwis</label>
-                <label><input type="checkbox"> Coconuts</label>
-                <label><input type="checkbox" checked> Diabetes (Low Glycemic Index)</label>
-                <label><input type="checkbox" checked> Sesame</label>
-                <label><input type="checkbox"> Olive</label>
-                <label><input type="checkbox"> Corn</label>
-                <label><input type="checkbox"> Kiwis</label>
-                <label><input type="checkbox"> Coconuts</label>
+            <div class="row">
+                <div class="column">
+                    <label><input type="checkbox"> Organs (liver, kidney, etc.)</label>
+                    <label><input type="checkbox"> Red meat</label>
+                    <label><input type="checkbox"> Alcohol</label>
+                    <label><input type="checkbox"> Ice cream</label>
+                </div>
+                <div class="column">
+                    <label><input type="checkbox"> Lactose Intolerance</label>
+                    <label><input type="checkbox"> Meat (i.e. you are vegetarian)</label>
+                    <label><input type="checkbox"> Kosher-only</label>
+                    <label><input type="checkbox"> Bananas</label>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="foodPreferences">Food Preferences:</label>
-                <input type="text" id="foodPreferences" name="foodPreferences" placeholder="e.g., Vegan, Seafood">
-            </div>
-            <div class="input-group">
-                <label for="dietaryRestrictions">Dietary Restrictions:</label>
-                <input type="text" id="dietaryRestrictions" name="dietaryRestrictions" placeholder="e.g., Gluten-free, Nut allergies">
-            </div>
-            <button type="submit">Submit</button>
+
             <div id="message"></div>
         </form>
     </div>
@@ -76,3 +76,21 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

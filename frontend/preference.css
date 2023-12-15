@@ -66,6 +66,29 @@ body, html {
     max-width: 600px;
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.user-icon {
+    width: 50px; /* Adjust the size as needed */
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-details p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+
 h2 {
     font-size: 14px;
     color: #333;
