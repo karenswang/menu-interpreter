@@ -22,6 +22,6 @@ function redirectToMyProfile(){
     window.location.href = "preference.html"
 }
 
-function redirectToSignup() {
-    window.location.href = 'signup.html';
-}
+// function redirectToSignup() {
+//     window.location.href = 'signup.html';
+// }
