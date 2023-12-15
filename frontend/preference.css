@@ -97,7 +97,10 @@ h2 {
 
 .restrictions-form {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .column {
@@ -132,4 +135,17 @@ button:hover {
 
 .input-group {
     margin-top: 20px;
+}
+
+.submit-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px; /* Adjust as needed */
+}
+.form-content {
+    display: flex;
+    justify-content: space-between;
+    /* Other styles as needed */
 }
