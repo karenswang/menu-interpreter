@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    loadPreferences();
+    const username = localStorage.getItem('username');
+    loadPreferences(username);
     const form = document.getElementById('preferenceForm')
     
     form.addEventListener('submit', function(event) {
@@ -55,30 +56,41 @@ function savePreferences(dietaryRestrictions, preferences) {
     localStorage.setItem('userPreferences', JSON.stringify(preferencesData));
 }
 
-function loadPreferences() {
-    const savedPreferences = JSON.parse(localStorage.getItem('userPreferences'));
-    if (savedPreferences) {
-        const checkboxes = document.querySelectorAll('.restrictions-form input[type=checkbox]');
-        
-        // Update checkboxes and collect their labels
-        let checkedLabels = [];
-        checkboxes.forEach(checkbox => {
-            const label = checkbox.nextSibling.textContent.trim();
-            if (savedPreferences.dietaryRestrictions.includes(label)) {
-                checkbox.checked = true;
-                checkedLabels.push(label);
-            } else {
-                checkbox.checked = false;
-            }
+function loadPreferences(username) {
+    const apigClient = apigClientFactory.newClient();
+    apigClient.preferenceUsernameGet({ username })
+        .then(response => {
+            const preferencesData = JSON.parse(response.data.preferences);
+            updateFormWithPreferences(preferencesData);
+        })
+        .catch(error => {
+            console.error('Error fetching preferences:', error);
+            // Handle error appropriately
         });
+}
 
-        // Update text inputs: filter out items that are already checked
-        const dietaryRestrictionsText = savedPreferences.dietaryRestrictions
-            .filter(item => !checkedLabels.includes(item))
-            .join(', ');
-        document.getElementById('dietaryRestrictions').value = dietaryRestrictionsText;
+function updateFormWithPreferences(preferencesData) {
+    const dietaryRestrictions = preferencesData['dietary restriction'];
+    const preferences = preferencesData['preference'];
 
-        // Update food preferences text input
-        document.getElementById('foodPreferences').value = savedPreferences.preferences.join(', ');
-    }
+    const checkboxes = document.querySelectorAll('.restrictions-form input[type=checkbox]');
+
+    // Collect the labels of all checkboxes for comparison
+    const checkboxLabels = Array.from(checkboxes).map(checkbox => checkbox.nextSibling.textContent.trim());
+
+    // Update checkboxes
+    checkboxes.forEach(checkbox => {
+        if (dietaryRestrictions.includes(checkbox.nextSibling.textContent.trim())) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+    });
+
+    // Filter out the dietary restrictions that are already covered by checkboxes
+    const dietaryRestrictionsForTextField = dietaryRestrictions.filter(item => !checkboxLabels.includes(item));
+
+    // Update text inputs
+    document.getElementById('dietaryRestrictions').value = dietaryRestrictionsForTextField.join(', ');
+    document.getElementById('foodPreferences').value = preferences.join(', ');
 }
