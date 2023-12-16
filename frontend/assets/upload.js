@@ -36,8 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const payload = {
             base64Image: base64Image,
-            filename: filename,
-            username: username
+            filename: filename
         };
 
         // const formData = new FormData();
