@@ -59,7 +59,9 @@ def generate_report(client, menu_items, restaurant_name, preferences):
     model="gpt-3.5-turbo",
     messages=[
         {"role": "system", "content": "You have information about a restaurant's dishes and a user's dietary preferences."},
-        {"role": "user", "content": f"Menu items: {menu_items}\nRestaurant name: {restaurant_name}\nUser preferences: {json.dumps(preferences)}\n\nGenerate a report on the matchness of the menu to the user preferences. Use this as an example:\
+        {"role": "user", "content": f"Menu items: {menu_items}\nRestaurant name: {restaurant_name}\nUser preferences: {json.dumps(preferences)}\n\nGenerate a report on the matchness of the menu to the user preferences. \
+        The report should include the following sections:\n\n1. Resteraunt Name \n\n2. Favorites: Highlight dishes that match the user food preference but do not contain user dieary restrictions.\n\n3. Dishes with Allergen Warning: Identify dishes that contains users dieary restrictions.\
+        Use this as an example:\
         Restaurant: David Burke Tavern\nMost dominant food category: seafood (80%)\
         Recommended: cauliflower steak, roasted rack of lamb, wild mushroom ravioli\
         Avoid: fire roasted halibut, diver scallops, lobster salad\
