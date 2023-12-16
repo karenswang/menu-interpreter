@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Get the boto3 client.
 textract_client = boto3.client('textract')
 dynamodb = boto3.resource('dynamodb')
-
+s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
     """
@@ -47,6 +47,11 @@ def lambda_handler(event, context):
         # elif 's3' in event:
         bucket = event['Records'][0]['s3']['bucket']['name']
         object_key = event['Records'][0]['s3']['object']['key']
+        
+        metadata = s3.head_object(Bucket=bucket, Key=object_key)
+        print("metadata: ", metadata)
+        username = metadata.get('Metadata', {}).get('username', '')
+        print("username: ", username)
         image = {'S3Object':
                     {'Bucket':  bucket,
                      'Name': object_key}
@@ -75,7 +80,7 @@ def lambda_handler(event, context):
         blocks = response['Blocks']
         
         extracted_text = extract_text_from_textract_response(response)
-        print(extracted_text)
+        print("extracted text:", extracted_text)
 
     except ClientError as err:
         error_message = "Couldn't analyze image. " + \
@@ -104,7 +109,7 @@ def lambda_handler(event, context):
 
     # Extract restaurant name from the file name (assuming file name is the restaurant name)
     restaurant_name = object_key
-    save_to_dynamodb('menu-items', restaurant_name, extracted_text)
+    save_to_dynamodb('menu-items', restaurant_name, extracted_text, username)
 
     lambda_response = {
         "statusCode": 200,
@@ -134,7 +139,7 @@ def extract_text_from_textract_response(response):
     return extracted_text
     
     
-def save_to_dynamodb(table_name, restaurant_name, extracted_text):
+def save_to_dynamodb(table_name, restaurant_name, extracted_text, username):
     table = dynamodb.Table(table_name)
     # menu_id = str(uuid.uuid4())
     try:
@@ -142,7 +147,8 @@ def save_to_dynamodb(table_name, restaurant_name, extracted_text):
             # 'menu_id': menu_id, 
             'menu_id': restaurant_name, # using user-defined restaurant name for now
             'restaurant_name': restaurant_name,
-            'menu_text': extracted_text
+            'menu_text': extracted_text,
+            'uploaded_by': username
         })
         logger.info(f"Data saved for restaurant: {restaurant_name}")
     except ClientError as e:

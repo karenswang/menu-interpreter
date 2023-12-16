@@ -22,8 +22,8 @@
         <div class="user-info">
             <img src="./image/user_icon.jpg" alt="User Icon" class="user-icon">
             <div class="user-details">
-                <p><strong>Username:</strong> Actual Username</p>
-                <p><strong>Email:</strong> actualuser@email.com</p>
+                <p id="usernameDisplay"><strong>Username:</strong> <span id="actualUsername">User not logged in</span></p>
+                <!-- <p><strong>Email:</strong> actualuser@email.com</p> -->
             </div>
         </div>
         
@@ -91,6 +91,17 @@
     <script type="text/javascript" src="./apiGateway-js-sdk/apigClient.js"></script>
     <script type="text/javascript" src="./assets/preference.js"></script>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        // Retrieve the username from localStorage
+        var username = localStorage.getItem('username');
+    
+        // Check if the username exists and update the display
+        if (username) {
+            document.getElementById('actualUsername').textContent = username;
+        }
+    });
+    </script>
 </body>
 </html>
 

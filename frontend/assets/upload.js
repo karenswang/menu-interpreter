@@ -23,6 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize API client
         const apigClient = apigClientFactory.newClient();
         const filename = fileInput.files[0].name;
+        
+        // Retrieve the username from local storage or other means
+        const username = localStorage.getItem('username');
+        // const objectKey = username + '/' + file.name;
+
+            // Check if username is available
+        if (!username) {
+            alert('Username not found. Please log in.');
+            return;
+        }
+
         const payload = {
             base64Image: base64Image,
             filename: filename
@@ -35,15 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
         //     'Content-Type': file.type
         // };
 
-        // Retrieve the username from local storage or other means
-        const username = localStorage.getItem('username');
-        // const objectKey = username + '/' + file.name;
-
         // Initialize API client
         // const apigClient = apigClientFactory.newClient();
 
         // Make the API call
-        apigClient.uploadObjectKeyPut({ 'objectKey': restaurantName }, payload, {})
+        apigClient.uploadObjectKeyPut({ 'objectKey': restaurantName, 'x-amz-meta-username': username }, payload, {})
             .then(response => {
                 console.log('File uploaded successfully:', response);
                 // displayMessage('File uploaded successfully', true);
