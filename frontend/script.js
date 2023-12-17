@@ -11,7 +11,7 @@ function redirectToMenu() {
 }
 
 function redirectToMenuSearch(){
-    /*window.location.href = */
+    window.location.href = "restaurants.html"
 }
 
 function redirectToScanMenu(){

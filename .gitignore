@@ -5,3 +5,6 @@ yelp.py
 convert_json.py
 .zip
 .vscode
+*.zip
+/lambda/extract-and-index/*
+/lambda/search-restaurant-menus/*

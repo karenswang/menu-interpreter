@@ -1,3 +1,5 @@
 openai
 # lambda giving errors on pydantic v2
 pydantic==1.*
+opensearch-py
+requests-aws4auth
