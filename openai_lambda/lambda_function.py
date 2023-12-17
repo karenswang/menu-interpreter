@@ -12,85 +12,102 @@ service = 'es'
 INDEX = 'menus'
 
 def lambda_handler(event, context):
-    print("event: ", event)
-    dynamodb = boto3.resource('dynamodb')
-    user_table = dynamodb.Table('user')
-    # menu_table = dynamodb.Table('menu-items')
-    
-    openai.api_key = os.environ['OPENAI_API_KEY']
-    
-    client = OpenAI(
-        api_key=openai.api_key,
-        )
-    
-    body = json.loads(event['body'])
-    username = body['username']
-    menu_id = event['pathParameters']['menu_id']
-         
-    user_data = user_table.get_item(Key={'username': username})
-    if 'Item' not in user_data or not user_data['Item'].get('isLoggedIn'):
-        return {
-            'statusCode': 403,
-            'headers': {
-            'Access-Control-Allow-Origin': '*'
-        },
-            'body': json.dumps('User is not logged in or does not exist.')
-        }
-    
-    preferences = user_data['Item']['preferences']
-    
-    print("menu id: ", menu_id)
-    os_client = OpenSearch(hosts=[{
-    'host': HOST,
-    'port': 443
-    }],
-                    http_auth=get_awsauth(REGION, 'es'),
-                    use_ssl=True,
-                    verify_certs=True,
-                    connection_class=RequestsHttpConnection)
-    
-    search_response = os_client.search(
-                index='menus',
-                body={
-                    'query': {
-                        'term': {
-                            'restaurant_name': menu_id
+    try:
+        print("event: ", event)
+
+        # Check if 'body' key exists in the event
+        if 'body' not in event:
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps('No body in the request')
+            }
+
+        body = json.loads(event['body'])
+        username = body['username']
+        menu_id = event['pathParameters']['menu_id']
+
+        dynamodb = boto3.resource('dynamodb')
+        user_table = dynamodb.Table('user')
+        # menu_table = dynamodb.Table('menu-items')
+        
+        openai.api_key = os.environ['OPENAI_API_KEY']
+        
+        client = OpenAI(
+            api_key=openai.api_key,
+            )
+        
+        user_data = user_table.get_item(Key={'username': username})
+        if 'Item' not in user_data or not user_data['Item'].get('isLoggedIn'):
+            return {
+                'statusCode': 403,
+                'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
+                'body': json.dumps('User is not logged in or does not exist.')
+            }
+        
+        preferences = user_data['Item']['preferences']
+        
+        print("menu id: ", menu_id)
+        os_client = OpenSearch(hosts=[{
+        'host': HOST,
+        'port': 443
+        }],
+                        http_auth=get_awsauth(REGION, 'es'),
+                        use_ssl=True,
+                        verify_certs=True,
+                        connection_class=RequestsHttpConnection)
+        
+        search_response = os_client.search(
+                    index='menus',
+                    body={
+                        'query': {
+                            'term': {
+                                'restaurant_name': menu_id
+                            }
                         }
                     }
-                }
-            )
-    if not search_response['hits']['hits']:
-        return {
-            'statusCode': 404,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps('Menu does not exist.')
-        }
-    menu_data = search_response['hits']['hits'][0]['_source']
-    menu_items = menu_data['menu_text']
-    restaurant_name = menu_data['restaurant_name']
-    
-    # menu_data = menu_table.get_item(Key={'menu_id': menu_id})
-    # if 'Item' not in menu_data:
-    #     return {
-    #         'statusCode': 404,
-    #         'headers': {
-    #         'Access-Control-Allow-Origin': '*'
-    #     },
-    #         'body': json.dumps('Menu does not exist.')
-    #     }
+                )
+        print("search response: ", search_response)
+        if not search_response['hits']['hits']:
+            return {
+                'statusCode': 404,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps('Menu does not exist.')
+            }
+        menu_data = search_response['hits']['hits'][0]['_source']
+        menu_items = menu_data['menu_text']
+        restaurant_name = menu_data['restaurant_name']
         
-    # menu_items = menu_data['Item']['menu_text']
-    # restaurant_name = menu_data['Item']['restaurant_name']
-    
-    report = generate_report(client, menu_items, restaurant_name, preferences)
+        # menu_data = menu_table.get_item(Key={'menu_id': menu_id})
+        # if 'Item' not in menu_data:
+        #     return {
+        #         'statusCode': 404,
+        #         'headers': {
+        #         'Access-Control-Allow-Origin': '*'
+        #     },
+        #         'body': json.dumps('Menu does not exist.')
+        #     }
+            
+        # menu_items = menu_data['Item']['menu_text']
+        # restaurant_name = menu_data['Item']['restaurant_name']
+        
+        report = generate_report(client, menu_items, restaurant_name, preferences)
 
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Access-Control-Allow-Origin': '*'
-        },
-        'body': json.dumps(report)
-    }
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps(report)
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps(f'An error occurred: {str(e)}')
+        }
     
 def generate_report(client, menu_items, restaurant_name, preferences):
     completion = client.chat.completions.create(

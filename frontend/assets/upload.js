@@ -101,17 +101,38 @@ function callAnalyzeMenuEndpoint(menuId, apigClient) {
 
 
 function displayMessage(message, isSuccess) {
+    let modal = document.getElementById('myModal');
+    let modalMessage = document.getElementById('modalMessage');
+    
+
     let messageDiv = document.getElementById('message');
     messageDiv.innerHTML = ''; // Clear existing content
     messageDiv.className = isSuccess ? 'success' : 'error';
 
-    // Split the message by newlines and create paragraphs
-    const paragraphs = message.split('\n');
-    paragraphs.forEach(paragraph => {
-        if (paragraph.trim() !== '') {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            messageDiv.appendChild(p);
-        }
-    });
-}
+   // Split the message by newlines and create paragraphs
+   const paragraphs = message.split('\n');
+   paragraphs.forEach(paragraph => {
+       if (paragraph.trim() !== '') {
+           const p = document.createElement('p');
+           p.textContent = paragraph;
+           modalMessage.appendChild(p);
+       }
+   });
+
+   modal.style.display = "block"; // Show the modal
+    }
+
+    // Close Modal Function
+    let span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+    let modal = document.getElementById('myModal');
+    modal.style.display = "none";
+    }
+
+    // Close Modal When Clicking Outside of It
+    window.onclick = function(event) {
+    let modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+    }
