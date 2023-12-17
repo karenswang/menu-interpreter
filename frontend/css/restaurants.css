@@ -115,11 +115,10 @@ h1 {
 }
 
 .result-image {
-    width: 100%; /* Adjust as needed */
+    width: 200px; /* Fixed width */
     height: 150px; /* Fixed height */
-    object-fit: cover; /* Keeps the aspect ratio, might crop the image */
-    margin-bottom: 10px;
-    border-radius: 4px;
+    object-fit: cover; /* This will crop the image to fill the container */
+    border-radius: 4px; /* Optional: for rounded corners */
 }
 
 .result-item p {
@@ -135,4 +134,64 @@ h1 {
     padding: 5px 10px;
     margin: 0 5px;
     display: none;   
+}
+
+.analyze-button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.analyze-button:hover {
+    background-color: #555;
+}
+
+
+
+
+
+
+
+/* Popup Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

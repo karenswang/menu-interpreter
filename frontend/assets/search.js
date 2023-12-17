@@ -41,6 +41,12 @@ function displaySearchResults(data, totalResults) {
         const resultItem = document.createElement('div');
         
         if (result.url) {
+            const analyzeButton = document.createElement('button');
+            analyzeButton.textContent = 'Analyze this menu';
+            analyzeButton.className = 'analyze-button';
+            analyzeButton.onclick = () => analyzeMenu(result.restaurant_name); // Assuming `menu_id` is part of the result
+            resultItem.appendChild(analyzeButton);
+
             const imgElement = document.createElement('img');
             imgElement.alt = 'Menu Image';
             imgElement.className = 'result-image';
@@ -105,4 +111,58 @@ function displaySearchResults(data, totalResults) {
     // Additional logic to enable/disable buttons based on the current page
     prevButton.disabled = currentPage === 1;
     nextButton.disabled = currentPage === totalPages;
+}
+
+function analyzeMenu(menuId) {
+    displayMessage('Analysis initiated. Give me a second to read the menu and your profile...', true);
+    const apigClient = apigClientFactory.newClient();
+    const username = localStorage.getItem('username');
+    if (!username) {
+        alert('Username not found. Please log in.');
+        return;
+    }
+
+    apigClient.analyzeMenuMenuIdPost({ 'menu_id': menuId }, {"username": username}, {})
+        .then(response => {
+            displayMessage(response.data, true); // Display the analysis result in a modal
+        })
+        .catch(error => {
+            console.error('Error during menu analysis:', error);
+            displayMessage('Error during menu analysis.', false);
+        });
+}
+
+function displayMessage(message, isSuccess) {
+    let modal = document.getElementById('myModal');
+    let modalMessage = document.getElementById('modalMessage');
+
+    modalMessage.innerHTML = ''; // Clear existing content
+    modalMessage.className = isSuccess ? 'success' : 'error';
+
+    // Split the message by newlines and create paragraphs
+    const paragraphs = message.split('\n');
+    paragraphs.forEach(paragraph => {
+        if (paragraph.trim() !== '') {
+            const p = document.createElement('p');
+            p.textContent = paragraph;
+            modalMessage.appendChild(p);
+        }
+    });
+
+    modal.style.display = "block"; // Show the modal
+}
+
+// Close Modal Function
+let span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+    let modal = document.getElementById('myModal');
+    modal.style.display = "none";
+}
+
+// Close Modal When Clicking Outside of It
+window.onclick = function(event) {
+    let modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }

@@ -28,10 +28,18 @@
         <button onclick="searchMenus()">Search</button>
     </div>
     <div class="checkbox-container">
-        <input type="checkbox" id="searchTypeRestaurant" name="searchType" value="restaurant" checked>
+        <input type="checkbox" id="searchTypeRestaurant" name="searchType" value="restaurant">
         <label for="searchTypeRestaurant">restaurant</label>
         <input type="checkbox" id="searchTypeMenu" name="searchType" value="menu">
         <label for="searchTypeMenu">menu</label>
+    </div>
+
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p> <!-- Place for message -->
+        </div>
     </div>
     
     <div id="results"></div>
