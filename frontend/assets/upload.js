@@ -39,16 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
             filename: filename
         };
 
-        // const formData = new FormData();
-        // formData.append('file', file);
-
-        // const headers = {
-        //     'Content-Type': file.type
-        // };
-
-        // Initialize API client
-        // const apigClient = apigClientFactory.newClient();
-
         // Make the API call
         apigClient.uploadObjectKeyPut({ 'objectKey': restaurantName, 'x-amz-meta-username': username }, payload, {})
             .then(response => {
