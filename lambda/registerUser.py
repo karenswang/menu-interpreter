@@ -18,6 +18,9 @@ def lambda_handler(event, context):
     if 'Item' in response:
         return {
             'statusCode': 400,
+            'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
             'body': json.dumps('User already exists.')
         }
 
