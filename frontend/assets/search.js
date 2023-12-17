@@ -33,6 +33,8 @@ function changePage(delta) {
 
 function displaySearchResults(data, totalResults) {
     const resultsContainer = document.getElementById('results');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
     resultsContainer.innerHTML = ''; // Clear existing results
 
     data.forEach(result => {
@@ -89,4 +91,18 @@ function displaySearchResults(data, totalResults) {
     const pageInfo = document.getElementById('pageInfo');
     const totalPages = Math.ceil(totalResults / pageSize);
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    if (data.length > 0 && totalPages > 1) {
+        // Show pagination buttons if there are results and more than one page
+        prevButton.style.display = 'inline';
+        nextButton.style.display = 'inline';
+    } else {
+        // Hide pagination buttons if no results or only one page of results
+        prevButton.style.display = 'none';
+        nextButton.style.display = 'none';
+    }
+
+    // Additional logic to enable/disable buttons based on the current page
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
 }

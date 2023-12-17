@@ -193,19 +193,3 @@ def extract_text_from_textract_response(response):
                     extracted_text += block['Text'] + ', '  # Adding a comma for each line
 
     return extracted_text
-    
-    
-# def save_to_dynamodb(table_name, restaurant_name, extracted_text, username):
-#     table = dynamodb.Table(table_name)
-#     # menu_id = str(uuid.uuid4())
-#     try:
-#         table.put_item(Item={
-#             # 'menu_id': menu_id, 
-#             'menu_id': restaurant_name, # using user-defined restaurant name for now
-#             'restaurant_name': restaurant_name,
-#             'menu_text': extracted_text,
-#             'uploaded_by': username
-#         })
-#         logger.info(f"Data saved for restaurant: {restaurant_name}")
-#     except ClientError as e:
-#         logger.error("Error saving to DynamoDB: %s", e)

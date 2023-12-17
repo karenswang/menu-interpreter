@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Error during menu analysis:', error);
                         displayMessage('Error during menu analysis.', false);
                     });
-            }, 3000); // Delay of 5000 milliseconds (5 seconds)
+            }, 5000); // Delay of 5000 milliseconds (5 seconds)
         })
         .catch(error => {
             console.error('Error uploading file:', error);
@@ -102,6 +102,16 @@ function callAnalyzeMenuEndpoint(menuId, apigClient) {
 
 function displayMessage(message, isSuccess) {
     let messageDiv = document.getElementById('message');
-    messageDiv.innerHTML = message;
+    messageDiv.innerHTML = ''; // Clear existing content
     messageDiv.className = isSuccess ? 'success' : 'error';
+
+    // Split the message by newlines and create paragraphs
+    const paragraphs = message.split('\n');
+    paragraphs.forEach(paragraph => {
+        if (paragraph.trim() !== '') {
+            const p = document.createElement('p');
+            p.textContent = paragraph;
+            messageDiv.appendChild(p);
+        }
+    });
 }

@@ -2,12 +2,20 @@ import json
 import boto3
 import openai
 from openai import OpenAI
+from requests_aws4auth import AWS4Auth
+from opensearchpy import OpenSearch, RequestsHttpConnection
 import os
 
+HOST = 'search-restaurant-menus-ts66x77o3tq7lapsmpgpjjcqli.us-east-1.es.amazonaws.com'
+REGION = 'us-east-1'
+service = 'es'
+INDEX = 'menus'
+
 def lambda_handler(event, context):
+    print("event: ", event)
     dynamodb = boto3.resource('dynamodb')
     user_table = dynamodb.Table('user')
-    menu_table = dynamodb.Table('menu-items')
+    # menu_table = dynamodb.Table('menu-items')
     
     openai.api_key = os.environ['OPENAI_API_KEY']
     
@@ -31,18 +39,48 @@ def lambda_handler(event, context):
     
     preferences = user_data['Item']['preferences']
     
-    menu_data = menu_table.get_item(Key={'menu_id': menu_id})
-    if 'Item' not in menu_data:
+    print("menu id: ", menu_id)
+    os_client = OpenSearch(hosts=[{
+    'host': HOST,
+    'port': 443
+    }],
+                    http_auth=get_awsauth(REGION, 'es'),
+                    use_ssl=True,
+                    verify_certs=True,
+                    connection_class=RequestsHttpConnection)
+    
+    search_response = os_client.search(
+                index='menus',
+                body={
+                    'query': {
+                        'term': {
+                            'restaurant_name': menu_id
+                        }
+                    }
+                }
+            )
+    if not search_response['hits']['hits']:
         return {
             'statusCode': 404,
-            'headers': {
-            'Access-Control-Allow-Origin': '*'
-        },
+            'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps('Menu does not exist.')
         }
+    menu_data = search_response['hits']['hits'][0]['_source']
+    menu_items = menu_data['menu_text']
+    restaurant_name = menu_data['restaurant_name']
+    
+    # menu_data = menu_table.get_item(Key={'menu_id': menu_id})
+    # if 'Item' not in menu_data:
+    #     return {
+    #         'statusCode': 404,
+    #         'headers': {
+    #         'Access-Control-Allow-Origin': '*'
+    #     },
+    #         'body': json.dumps('Menu does not exist.')
+    #     }
         
-    menu_items = menu_data['Item']['menu_text']
-    restaurant_name = menu_data['Item']['restaurant_name']
+    # menu_items = menu_data['Item']['menu_text']
+    # restaurant_name = menu_data['Item']['restaurant_name']
     
     report = generate_report(client, menu_items, restaurant_name, preferences)
 
@@ -71,3 +109,11 @@ def generate_report(client, menu_items, restaurant_name, preferences):
     )
     answer = completion.choices[0].message.content
     return answer
+
+def get_awsauth(region, service):
+    cred = boto3.Session().get_credentials()
+    return AWS4Auth(cred.access_key,
+                    cred.secret_key,
+                    region,
+                    service,
+                    session_token=cred.token)
