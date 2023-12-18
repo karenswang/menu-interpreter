@@ -10,3 +10,71 @@ This project is still under development. Check out our [clikcable prototype](htt
 ## MVP/Checkpoint 2
 Current API invoke url: https://r6n9qvzplb.execute-api.us-east-1.amazonaws.com/test and [current API swagger file](./menu-interpreter-test-swagger.yaml).
 
+## Code structure
+```
+menu-interpreter
+│
+├── frontend
+│   ├── apiGateway-js-sdk
+│   ├── assets
+│   │   ├── login.js
+│   │   ├── preference.js
+│   │   ├── script.js
+│   │   ├── search.js
+│   │   └── upload.js
+│   ├── css
+│   │   └── login.css
+│   │   └── preference.css
+│   │   └── restaurants.css
+│   │   └── upload.css
+│   │   └── style.css
+│   ├── image/
+│   ├── login.html
+│   ├── menu.html
+│   ├── preference.html
+│   ├── restaurants.html
+│   └── upload.html
+│
+├── lambda
+│   ├── extract-menu-text.py
+│   ├── getUser.py
+│   ├── loginUser.py
+│   ├── registerUser.py
+│   ├── searchRestaurants.py
+│   └── updateUserPreference.py
+│
+├── menu-interpreter-test-swagger.yaml
+│
+├── openai_lambda
+│   └── lambda_function.py
+│
+└── README.md
+```
+
+- frontend/: A directory containing all front-end related files.
+    - apiGateway-js-sdk/: JavaScript SDK for interacting with AWS API Gateway.
+    - assets/: Contains static assets like JavaScript files.
+        - login.js: JavaScript file handling login functionality.
+        - preference.js: JavaScript for user preference settings.
+        - script.js: General purpose scripts (for navigation bar) for the frontend.
+        - search.js: Handles search functionality in the frontend.
+        - upload.js: Manages menu image uploads.
+    - css/: Directory for all CSS files styling the frontend.
+    - image/: Stores images used in the frontend.
+    - login.html: HTML page for user login.
+    - menu.html: HTML page showing the menu details.
+    - preference.html: Page for setting user preferences.
+    - restaurants.html: Lists restaurants.
+    - upload.html: Interface for uploading menu files.
+- lambda/: Contains AWS Lambda functions.
+    - extract-menu-text.py: Lambda function to extract text from menu images and stores them in opensearch.
+    - getUser.py: Retrieves user data.
+    - loginUser.py: Handles user login process.
+    - registerUser.py: Manages new user registration.
+    - searchRestaurants.py: Lambda function to search for restaurants.
+    - updateUserPreference.py: Updates user preferences.
+- menu-interpreter-test-swagger.yaml: Swagger configuration file for API testing.
+- openai_lambda/: Lambda functions related to OpenAI services.
+    - lambda_function.py: Main lambda function for OpenAI integration.
+- README.md: Documentation file for the repository.
+
