@@ -33,14 +33,21 @@
         <label for="searchTypeRestaurant">restaurant</label>
         <input type="checkbox" id="searchTypeMenu" name="searchType" value="menu">
         <label for="searchTypeMenu">menu</label>
+        <input type="checkbox" id="searchTypeByMe" name="searchType" value="by me">
+        <label for="searchTypeRestaurant">uploaded by me</label>
     </div>
 
     <div id="myModal" class="modal">
-        <!-- Modal content -->
+        <!-- text modal -->
         <div class="modal-content">
             <span class="close">&times;</span>
             <p id="modalMessage"></p> <!-- Place for message -->
         </div>
+    </div>
+        <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <span class="close-image-modal">&times;</span>
+        <img class="modal-image-content" id="modalImage" src="">
     </div>
     
     <div id="results"></div>

@@ -176,13 +176,13 @@ apigClientFactory.newClient = function (config) {
     apigClient.searchMenusGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, ['keyword', 'type'], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, ['keyword', 'username', 'type'], ['body']);
         
         var searchMenusGetRequest = {
             verb: 'get'.toUpperCase(),
             path: pathComponent + uritemplate('/search-menus').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
-            queryParams: apiGateway.core.utils.parseParametersToObject(params, ['keyword', 'type']),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, ['keyword', 'username', 'type']),
             body: body
         };
         

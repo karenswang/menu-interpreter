@@ -7,11 +7,14 @@ function searchMenus(page = 1) {
     currentPage = page;
     const searchInput = document.getElementById('searchInput').value;
     const searchType = document.querySelector('input[name="searchType"]:checked').value;
+    const searchByMe = document.getElementById('searchTypeByMe').checked ? localStorage.getItem('username') : '';
+    console.log('by me: ', searchByMe)
     const params = {
         keyword: searchInput,
         type: searchType,
         page: currentPage,
-        limit: pageSize
+        limit: pageSize,
+        username: searchByMe
     };
     console.log("params: ", params);
 
@@ -50,6 +53,9 @@ function displaySearchResults(data, totalResults) {
             const imgElement = document.createElement('img');
             imgElement.alt = 'Menu Image';
             imgElement.className = 'result-image';
+            imgElement.onclick = function() {
+                openImageModal(imgElement.src);
+            };
             // imgElement.src = 'data:image/jpeg;base64,' + result.url;
             // console.log('Fetching URL:', result.url);
 
@@ -137,7 +143,7 @@ function displayMessage(message, isSuccess) {
     let modalMessage = document.getElementById('modalMessage');
 
     modalMessage.innerHTML = ''; // Clear existing content
-    modalMessage.className = isSuccess ? 'success' : 'error';
+    // modalMessage.className = isSuccess ? 'success' : 'error';
 
     // Split the message by newlines and create paragraphs
     const paragraphs = message.split('\n');
@@ -164,5 +170,24 @@ window.onclick = function(event) {
     let modal = document.getElementById('myModal');
     if (event.target == modal) {
         modal.style.display = "none";
+    }
+}
+
+function openImageModal(src) {
+    let modal = document.getElementById('imageModal');
+    let modalImg = document.getElementById('modalImage');
+    let span = document.getElementsByClassName('close-image-modal')[0];
+
+    modalImg.src = src;
+    modal.style.display = 'block';
+
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
     }
 }

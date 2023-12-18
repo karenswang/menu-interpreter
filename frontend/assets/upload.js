@@ -11,60 +11,93 @@ document.addEventListener('DOMContentLoaded', function() {
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-
-        // const fileInput = document.getElementById('menuFile');
-        // const file = fileInput.files[0];
         const restaurantName = document.getElementById('restaurantName').value;
         if (!base64Image || !restaurantName) {
             alert('Please fill all required fields.');
             return;
         }
 
-        // Initialize API client
-        const apigClient = apigClientFactory.newClient();
-        const filename = fileInput.files[0].name;
-        
-        // Retrieve the username from local storage or other means
         const username = localStorage.getItem('username');
-        // const objectKey = username + '/' + file.name;
-
-            // Check if username is available
+        console.log('Username:', username)
         if (!username) {
             alert('Username not found. Please log in.');
             return;
         }
 
-        const payload = {
-            base64Image: base64Image,
-            filename: filename
-        };
+        // Check if the menu already exists
+        checkExistingMenu(restaurantName, username, () => {
+            // If confirmed or no existing menu, proceed with upload
+            uploadMenu(restaurantName, fileInput.files[0], username);
+        });
+    });
+});
 
-        // Make the API call
-        apigClient.uploadObjectKeyPut({ 'objectKey': restaurantName, 'x-amz-meta-username': username }, payload, {})
-            .then(response => {
-                console.log('File uploaded successfully:', response);
-                // displayMessage('File uploaded successfully', true);
-                displayMessage('Analysis initiated. Give me a second to read the menu and your profile...', true);
+function checkExistingMenu(restaurantName, username, callback) {
+    const apigClient = apigClientFactory.newClient();
+    const params = {
+        keyword: restaurantName,
+        type: 'restaurant',
+        username: username
+    };
+    console.log('Checking existing menu:', params);
 
-            // Wait for a delay before calling analyzeMenuEndpoint
+    apigClient.searchMenusGet(params, {}, {})
+        .then(response => {
+            console.log('Existing menu check:', response);
+            const results = response.data.results;
+            if (results.length > 0) {
+                // Menu already exists, ask for confirmation to overwrite
+                if (confirm("You have already uploaded a menu for this restaurant. Do you want to overwrite it?")) {
+                    callback(); // Proceed with upload
+                }
+                // If user does not confirm, do not proceed
+            } else {
+                callback(); // No existing menu, proceed with upload
+            }
+        })
+        .catch(error => {
+            console.error('Error checking existing menu:', error);
+        });
+}
+
+function uploadMenu(restaurantName, file, username) {
+    const apigClient = apigClientFactory.newClient();
+    const filename = file.name;
+    const payload = {
+        base64Image: base64Image,
+        filename: filename
+    };
+
+    apigClient.uploadObjectKeyPut({ 'objectKey': restaurantName, 'x-amz-meta-username': username }, payload, {})
+        .then(response => {
+            console.log('File uploaded successfully:', response);
+            displayMessage('Analysis initiated. Give me a second to read the menu and your profile...', true);
             setTimeout(() => {
-                callAnalyzeMenuEndpoint(restaurantName, apigClient)
-                    .then(response => {
-                        console.log('Menu analysis initiated:', response);
-                        displayMessage(response.data, true);
-                    })
-                    .catch(error => {
-                        console.error('Error during menu analysis:', error);
-                        displayMessage('Error during menu analysis.', false);
-                    });
-            }, 5000); // Delay of 5000 milliseconds (5 seconds)
+                callAnalyzeMenuEndpoint(restaurantName, apigClient);
+            }, 5000);
         })
         .catch(error => {
             console.error('Error uploading file:', error);
             displayMessage('An error occurred during file upload.', false);
         });
-});
-});
+}
+
+function callAnalyzeMenuEndpoint(menuId, apigClient) {
+    const username = localStorage.getItem('username');
+    const body = { username: username };
+    return apigClient.analyzeMenuMenuIdPost({ 'menu_id': menuId }, body, {})
+        .then(response => {
+            console.log('Menu analysis initiated:', response);
+            displayMessage(response.data, true);
+        })
+        .catch(error => {
+            console.error('Error during menu analysis:', error);
+            displayMessage('Error during menu analysis.', false);
+        });
+}
+
+// Other functions (readImage, displayMessage) remain unchanged
+
 
 function readImage(file) {
     if (file.type && !file.type.startsWith('image/')) {
@@ -80,24 +113,15 @@ function readImage(file) {
     reader.readAsDataURL(file);
 }
 
-function callAnalyzeMenuEndpoint(menuId, apigClient) {
-    const username = localStorage.getItem('username'); 
-    const body = {
-        username: username
-    };
 
-    return apigClient.analyzeMenuMenuIdPost({ 'menu_id': menuId }, body, {});
-}
 
 
 function displayMessage(message, isSuccess) {
     let modal = document.getElementById('myModal');
     let modalMessage = document.getElementById('modalMessage');
     
-
-    let messageDiv = document.getElementById('message');
-    messageDiv.innerHTML = ''; // Clear existing content
-    messageDiv.className = isSuccess ? 'success' : 'error';
+    modalMessage.innerHTML = ''; // Clear existing content
+    // modalMessage.className = isSuccess ? 'success' : 'error';
 
    // Split the message by newlines and create paragraphs
    const paragraphs = message.split('\n');
