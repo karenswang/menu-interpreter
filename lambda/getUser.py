@@ -13,6 +13,9 @@ def lambda_handler(event, context):
     if 'Item' not in response or not response['Item'].get('isLoggedIn'):
         return {
             'statusCode': 403,
+            'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
             'body': json.dumps('User is not logged in or does not exist.')
         }
 
@@ -24,5 +27,8 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
         'body': json.dumps(user_data)
     }

@@ -16,6 +16,9 @@ def lambda_handler(event, context):
     if 'Item' not in response:
         return {
             'statusCode': 404,
+            'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
             'body': json.dumps('User not found.')
         }
 
@@ -25,6 +28,9 @@ def lambda_handler(event, context):
     if user['password'] != password:
         return {
             'statusCode': 400,
+            'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
             'body': json.dumps('Invalid username/password.')
         }
 
@@ -38,5 +44,8 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*'
+        },
         'body': json.dumps('User logged in successfully.')
     }

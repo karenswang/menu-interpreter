@@ -1,5 +1,6 @@
 import json
 import os
+import requests
 from opensearchpy import OpenSearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import boto3
@@ -8,47 +9,6 @@ HOST = 'search-restaurant-menus-ts66x77o3tq7lapsmpgpjjcqli.us-east-1.es.amazonaw
 REGION = 'us-east-1'
 service = 'es'
 INDEX = 'menus'
-
-# def query(client, keywords, search_field):
-#     search_query = ' AND '.join(keywords)
-
-#     search_response = client.search(
-#             index=INDEX,
-#             body={
-#                 'query': {
-#                     'multi_match': {
-#                         'query': search_query,
-#                         'fields': search_field
-#                     }
-#                 }
-#             }
-#         )
-
-#     print(search_response)
-
-#     hits = search_response['hits']['hits']
-#     results = []
-#     for hit in hits:
-#         source = hit['_source']
-#         bucket = source.get('bucket')
-#         objectKey = source.get('objectKey')
-        
-#         # Return a pre-signed photo URL for frontend rendering
-#         # photo_url = f'https://{bucket}.s3.amazonaws.com/{objectKey}'
-#         s3_client = boto3.client('s3')
-#         presigned_url = s3_client.generate_presigned_url('get_object',
-#                                                  Params={'Bucket': bucket,
-#                                                          'Key': objectKey},
-#                                                  ExpiresIn=3600)  # URL expires in 1 hour
-
-#         photo_object = {
-#             "url": presigned_url,
-#             "labels": source.get('labels', [])
-#         }
-#         results.append(photo_object)
-
-#     return results
-    
     
 def get_awsauth(region, service):
     cred = boto3.Session().get_credentials()
@@ -61,17 +21,16 @@ def get_awsauth(region, service):
 
 def lambda_handler(event, context):
     print(event)
+    
+    # Pagination parameters
+    page = int(event.get('queryStringParameters', {}).get('page', 1))
+    pageSize = int(event.get('queryStringParameters', {}).get('limit', 10))
+    start = (page - 1) * pageSize  # Calculate the starting index
+    
     # Query parameter and type
     query_param = event.get('queryStringParameters', {}).get('keyword', '').lower()
     search_type = event.get('queryStringParameters', {}).get('type', '')
-
-    # Determine the field to search in
-    if search_type == 'restaurant':
-        search_field = 'restaurant_name'
-    else:
-        search_field = 'menu_text'
-
-    print(f"Query Param: {query_param}, Search Type: {search_type}, Search Field: {search_field}")
+    username = event.get('queryStringParameters', {}).get('username', None)
 
     # Prepare response format
     response = {
@@ -94,21 +53,43 @@ def lambda_handler(event, context):
                         verify_certs=True,
                         connection_class=RequestsHttpConnection)
         
+
+
+    
+        query_body = {
+            'query': {
+                'bool': {
+                    'must': [{'query_string': {'default_field': 'menu_text' if search_type != 'restaurant' else 'restaurant_name', 'query': f'*{query_param}*'}}]
+                }
+            }
+        }   
+        
+        if username:
+            query_body['query']['bool']['filter'] = [{'term': {'uploaded_by': username}}]
+        
         search_response = client.search(
             index=INDEX,
-            body={
-                    'query': {
-                        'query_string': {
-                            'default_field': search_field,
-                            'query': f'*{query_param}*'
-                        }
-                    }
-                }
+            body=query_body
         )
-        print(search_response)
-        # response["body"] = json.dumps(search_response['hits']['hits'])
         
+        
+        # search_response = client.search(
+        #     index=INDEX,
+        #     body={
+        #             'query': {
+        #                 'query_string': {
+        #                     'default_field': search_field,
+        #                     'query': f'*{query_param}*'
+        #                 }
+        #             }
+        #         }
+        # )
+        print(search_response)
+
         hits = search_response['hits']['hits']
+        total_hits = search_response['hits']['total']['value']  # Get total number of hits
+        total_pages = (total_hits + pageSize - 1) // pageSize  # Calculate total number of pages
+
         results = []
         for hit in hits:
             source = hit['_source']
@@ -140,7 +121,11 @@ def lambda_handler(event, context):
                     "url": None
                 }
             results.append(record)
-        response["body"] = json.dumps(results)  # JSON serialization
+        response["body"] = json.dumps({
+                "results": results,
+                "totalPages": total_pages
+            })
+
 
 
     except Exception as error:

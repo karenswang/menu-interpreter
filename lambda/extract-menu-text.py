@@ -40,6 +40,7 @@ def get_awsauth(region, service):
                     session_token=cred.token)
     
 def save_to_opensearch(restaurant_name, extracted_text, username, bucket, object_key):    
+    document_id = f"{restaurant_name}-{username}".replace(" ", "_").lower()
     document = {
         'restaurant_name': restaurant_name,
         'menu_text': extracted_text,
@@ -59,10 +60,10 @@ def save_to_opensearch(restaurant_name, extracted_text, username, bucket, object
                         connection_class=RequestsHttpConnection)
     
         if not client.indices.exists(index=INDEX):
-                client.indices.create(index=INDEX, body={})
+            client.indices.create(index=INDEX, body={})
             
             
-        index_response = client.index(index=INDEX, body=document)
+        index_response = client.index(index=INDEX, id=document_id, body=document)
         print("Document indexed:", document)
         print("Index response:", index_response)
     except Exception as e:
