@@ -10,6 +10,9 @@ This project is still under development. Check out our [clikcable prototype](htt
 ## MVP/Checkpoint 2
 Current API invoke url: https://r6n9qvzplb.execute-api.us-east-1.amazonaws.com/test and [current API swagger file](./menu-interpreter-test-swagger.yaml).
 
+## Demo video
+https://www.youtube.com/watch?v=o2SDX5g4kAM
+
 ## Code structure
 ```
 menu-interpreter
