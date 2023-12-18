@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "2023-11-20T05:11:44Z"
+  version: "2023-12-18T00:39:55Z"
   title: "menu-interpreter"
 host: "r6n9qvzplb.execute-api.us-east-1.amazonaws.com"
 basePath: "/test"
@@ -102,6 +102,48 @@ paths:
               type: "string"
             Access-Control-Allow-Headers:
               type: "string"
+  /search-menus:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "keyword"
+        in: "query"
+        required: true
+        type: "string"
+      - name: "username"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "type"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
   /upload/{objectKey}:
     put:
       produces:
@@ -109,6 +151,10 @@ paths:
       parameters:
       - name: "objectKey"
         in: "path"
+        required: true
+        type: "string"
+      - name: "x-amz-meta-username"
+        in: "header"
         required: true
         type: "string"
       responses:
