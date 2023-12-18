@@ -62,10 +62,10 @@ menu-interpreter
     - css/: Directory for all CSS files styling the frontend.
     - image/: Stores images used in the frontend.
     - login.html: HTML page for user login.
-    - menu.html: HTML page showing the menu details.
+    - menu.html: this is the app landing page.
     - preference.html: Page for setting user preferences.
-    - restaurants.html: Lists restaurants.
-    - upload.html: Interface for uploading menu files.
+    - restaurants.html: page for searching and listing restuaurants and menus.
+    - upload.html: Interface for uploading menu files and getting analysis.
 - lambda/: Contains AWS Lambda functions.
     - extract-menu-text.py: Lambda function to extract text from menu images and stores them in opensearch.
     - getUser.py: Retrieves user data.
